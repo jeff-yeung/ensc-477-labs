@@ -110,15 +110,8 @@ sino_360_1 = np.loadtxt("360_1.txt", dtype='f', delimiter = '\t')
 sino_360_5 = np.loadtxt("360_5.txt", dtype='f', delimiter = '\t')
 
 sino_1 = plt.imread("sino1.bmp")
-'''
-print(sino_1)
-print(sino_1.shape[0], sino_1.shape[1])
-plt.imshow(sino_1, cmap='gray', origin = 'lower')
-plt.title('sino1 with no added noise or dosage')
-plt.xlabel('Number of Projections')
-plt.ylabel('Angle of Rotation')
-plt.show()
-'''
+
+
 recon_back_proj(sino_1, 180)
 
 sino_1_noise1 = add_noise(sino_1, 0, 1, 1)
@@ -128,40 +121,34 @@ plt.xlabel('Number of Projections')
 plt.ylabel('Angle of Rotation')
 plt.show()
 
-sino_1_noise2 = add_noise(sino_1, 2, 2, 2)
+sino_1_noise2 = add_noise(sino_1, 0, 2, 1)
 plt.imshow(sino_1_noise2, cmap='gray', origin = 'lower')
-plt.title('sino1 with added noise')
+plt.title('sino1 with added noise ')
 plt.xlabel('Number of Projections')
 plt.ylabel('Angle of Rotation')
 plt.show()
 
-sino_1_noise3 = add_noise(sino_1, 3, 5, 2)
+sino_1_noise3 = add_noise(sino_1, 0, 5, 1)
 plt.imshow(sino_1_noise3, cmap='gray', origin = 'lower')
 plt.title('sino1 with added noise')
 plt.xlabel('Number of Projections')
 plt.ylabel('Angle of Rotation')
 plt.show()
 
-sino_1_noise4 = add_noise(sino_1, 3, 5, 4)
+sino_1_noise4 = add_noise(sino_1, 0, 7, 1)
 plt.imshow(sino_1_noise4, cmap='gray', origin = 'lower')
 plt.title('sino1 with added noise')
 plt.xlabel('Number of Projections')
 plt.ylabel('Angle of Rotation')
 plt.show()
 
-sino_1_noise5 = add_noise(sino_1, 3, 5, 8)
+sino_1_noise5 = add_noise(sino_1, 0, 12, 1)
 plt.imshow(sino_1_noise5, cmap='gray', origin = 'lower')
 plt.title('sino1 with added noise')
 plt.xlabel('Number of Projections')
 plt.ylabel('Angle of Rotation')
 plt.show()
 
-sino_1_noise6 = add_noise(sino_1, 3, 7, 8)
-plt.imshow(sino_1_noise6, cmap='gray', origin = 'lower')
-plt.title('sino1 with added noise')
-plt.xlabel('Number of Projections')
-plt.ylabel('Angle of Rotation')
-plt.show()
 
 #print(sino_90_1)
 #print(sino_90_5)
