@@ -1,8 +1,17 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import PIL
 from scipy.fftpack import fft, fftshift, ifft
 from scipy import ndimage
+
+def add_noise(sinogram, mean, std_dev, reduce_dose):
+	# Function to simulate adding noise and reducing dose_level
+	# reduce_dose is the factor of reduction of the image
+	# Returns a sinogram [n x m]
+
+	reduced_sino = sinogram/reduce_dose
+	noisy_image = reduced_sino + np.random.normal(mean, std_dev, reduced_sino.shape)
+
+	return noisy_image
 
 def filtered_sino(sinogram, param_a, _bool_plot):
 	# Function to remove high frequency noise from the sinogram
@@ -101,12 +110,60 @@ sino_360_1 = np.loadtxt("360_1.txt", dtype='f', delimiter = '\t')
 sino_360_5 = np.loadtxt("360_5.txt", dtype='f', delimiter = '\t')
 
 sino_1 = plt.imread("sino1.bmp")
+'''
 print(sino_1)
 print(sino_1.shape[0], sino_1.shape[1])
 plt.imshow(sino_1, cmap='gray', origin = 'lower')
+plt.title('sino1 with no added noise or dosage')
+plt.xlabel('Number of Projections')
+plt.ylabel('Angle of Rotation')
 plt.show()
-#print(sino_90_1)
+'''
+recon_back_proj(sino_1, 180)
 
+sino_1_noise1 = add_noise(sino_1, 0, 1, 1)
+plt.imshow(sino_1_noise1, cmap='gray', origin = 'lower')
+plt.title('sino1 with added noise')
+plt.xlabel('Number of Projections')
+plt.ylabel('Angle of Rotation')
+plt.show()
+
+sino_1_noise2 = add_noise(sino_1, 2, 2, 2)
+plt.imshow(sino_1_noise2, cmap='gray', origin = 'lower')
+plt.title('sino1 with added noise')
+plt.xlabel('Number of Projections')
+plt.ylabel('Angle of Rotation')
+plt.show()
+
+sino_1_noise3 = add_noise(sino_1, 3, 5, 2)
+plt.imshow(sino_1_noise3, cmap='gray', origin = 'lower')
+plt.title('sino1 with added noise')
+plt.xlabel('Number of Projections')
+plt.ylabel('Angle of Rotation')
+plt.show()
+
+sino_1_noise4 = add_noise(sino_1, 3, 5, 4)
+plt.imshow(sino_1_noise4, cmap='gray', origin = 'lower')
+plt.title('sino1 with added noise')
+plt.xlabel('Number of Projections')
+plt.ylabel('Angle of Rotation')
+plt.show()
+
+sino_1_noise5 = add_noise(sino_1, 3, 5, 8)
+plt.imshow(sino_1_noise5, cmap='gray', origin = 'lower')
+plt.title('sino1 with added noise')
+plt.xlabel('Number of Projections')
+plt.ylabel('Angle of Rotation')
+plt.show()
+
+sino_1_noise6 = add_noise(sino_1, 3, 7, 8)
+plt.imshow(sino_1_noise6, cmap='gray', origin = 'lower')
+plt.title('sino1 with added noise')
+plt.xlabel('Number of Projections')
+plt.ylabel('Angle of Rotation')
+plt.show()
+
+#print(sino_90_1)
 #print(sino_90_5)
 #print(sino_180_5)
 #print(sino_360_1)
