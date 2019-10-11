@@ -99,34 +99,39 @@ sino_180_5 = np.loadtxt("180_5.txt", dtype='f', delimiter = '\t')
 sino_360_1 = np.loadtxt("360_1.txt", dtype='f', delimiter = '\t')
 sino_360_5 = np.loadtxt("360_5.txt", dtype='f', delimiter = '\t')
 
-recon_back_proj(sino_360_1, 180)
+#recon_back_proj(sino_360_1, 180)
 
 sino_1 = plt.imread("sino1.bmp")
+sino_1_noise1 = add_noise(sino_1, 0, 1, 1)
+sino_1_filtered_1 = filtered_sino(sino_1_noise1, 1)
 
-sino_1_noise1 = add_noise(sino_1, 0, 5, 1)
-plt.imshow(sino_1_noise1, cmap='gray', origin = 'lower')
+plt.imshow(sino_1_filtered_1, cmap='gray', origin = 'lower')
 plt.title('sino1 with added noise')
 plt.xlabel('Number of Projections')
 plt.ylabel('Angle of Rotation')
 plt.show()
 
-sino_1_noise2 = add_noise(sino_1, 0, 5, 2)
-plt.imshow(sino_1_noise2, cmap='gray', origin = 'lower')
+sino_1_noise2 = add_noise(sino_1, 0, 2, 2)
+sino_1_filtered_2 = filtered_sino(sino_1_noise1, 1)
+
+plt.imshow(sino_1_filtered_2, cmap='gray', origin = 'lower')
 plt.title('sino1 with added noise')
 plt.xlabel('Number of Projections')
 plt.ylabel('Angle of Rotation')
 plt.show()
 
-sino_1_noise3 = add_noise(sino_1, 0, 5, 4)
-plt.imshow(sino_1_noise3, cmap='gray', origin = 'lower')
+sino_1_noise3 = add_noise(sino_1, 0, 5, 2)
+sino_1_filtered_3 = filtered_sino(sino_1_noise1, 1)
+
+plt.imshow(sino_1_filtered_3, cmap='gray', origin = 'lower')
 plt.title('sino1 with added noise')
 plt.xlabel('Number of Projections')
 plt.ylabel('Angle of Rotation')
 plt.show()
 
-recon_back_proj(sino_1_noise1, 180)
-recon_back_proj(sino_1_noise2, 180)
-recon_back_proj(sino_1_noise3, 180)
+recon_back_proj(sino_1_filtered_1, 180)
+recon_back_proj(sino_1_filtered_2, 180)
+recon_back_proj(sino_1_filtered_3, 180)
 
 
 '''
