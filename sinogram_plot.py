@@ -13,7 +13,7 @@ def add_noise(sinogram, mean, std_dev, reduce_dose):
 
 	return noisy_image
 
-def filtered_sino(sinogram, param_a, _bool_plot):
+def filtered_sino(sinogram, param_a):
 	# Function to remove high frequency noise from the sinogram
 	# returns a sinogram [n x m]
 
@@ -23,10 +23,10 @@ def filtered_sino(sinogram, param_a, _bool_plot):
 	# ramp filter
 	step_size = 2*np.pi/sinogram.shape[0]
 	w = np.arange(-np.pi, np.pi, step_size)
-	ramp_filter = abs(2/a*np.sin(a*w/2))
+	#ramp_filter = abs(2/a*np.sin(a*w/2))
 	# sinc filter
 	sinc_filter = np.sin(a*w/2)/(a*w/2) 
-	filter_proj = ramp_filter * sinc_filter**2
+	filter_proj = 2*sinc_filter - sinc_filter**2
 
 	fourier_filt = fftshift(filter_proj)
 	for i in range(sinogram.shape[1]):
@@ -34,16 +34,9 @@ def filtered_sino(sinogram, param_a, _bool_plot):
 		temp_sino = fourier_sino * fourier_filt
 		filt_sino[:,i] = np.real(ifft(temp_sino))
 
-	if _bool_plot == True:
-		plt.imshow(filt_sino.T, cmap='gray', aspect='auto', origin = 'lower')
-		plt.title('Filtered Sinogram Image')
-		plt.xlabel('Number of Projections')
-		plt.ylabel('Angle of Rotation')
-		plt.show()
-
 	return filt_sino
 
-def back_proj(sinogram, theta, _bool_plot):
+def back_proj(sinogram, theta):
 	# Function to produce a backprojection image from the sinogram given at the angle theta
 	# Returns an matrix [n x n]
 	theta_rad = theta*np.pi/180 #np.cos/sin only accepts rads
@@ -69,26 +62,19 @@ def back_proj(sinogram, theta, _bool_plot):
 	temp_sino = sinogram[:,theta]
 
 	back_proj_image[x0, y0] = temp_sino[l_rot[x0, y0]]
-	
-	if _bool_plot == True:
-		# print(back_proj_image)
-		plt.imshow(back_proj_image, cmap='gray', aspect='auto', origin = 'lower')
-		plt.title('Back Proj Image at degree')
-		plt.xlabel('Number of Projections')
-		plt.ylabel('Angle of Rotation')
-		plt.show()
+
 	return back_proj_image
 
-def recon_back_proj(sinogram, angles):
+def recon_back_proj(sinogram, num_rotations):
 	# Reconstructs the original image from all the backprojection images 
 	# Returns an matrix [n x n]
 	length = sinogram.shape[0]
 	recon_matrix = np.zeros((length, length))
 
-	if angles > sinogram.shape[1]:
+	if num_rotations > sinogram.shape[1]:
 		num_angles = sinogram.shape[1]
 	else:
-		num_angles = angles
+		num_angles = num_rotations
 
 	for theta in range(num_angles):
 		proj_image = back_proj(sinogram, theta, 0)
@@ -111,7 +97,7 @@ sino_360_5 = np.loadtxt("360_5.txt", dtype='f', delimiter = '\t')
 
 sino_1 = plt.imread("sino1.bmp")
 
-
+'''
 recon_back_proj(sino_1, 180)
 
 sino_1_noise1 = add_noise(sino_1, 0, 1, 1)
@@ -148,7 +134,7 @@ plt.title('sino1 with added noise')
 plt.xlabel('Number of Projections')
 plt.ylabel('Angle of Rotation')
 plt.show()
-
+'''
 
 #print(sino_90_1)
 #print(sino_90_5)
@@ -156,27 +142,27 @@ plt.show()
 #print(sino_360_1)
 #print(sino_360_5)
 
-'''
+
 # Transpose the dataset so that degrees is the y-axis and intensity? is the x-axis
-plt.imshow(sino_360_1.T, cmap='gray', aspect='auto', origin = 'lower')
-plt.title('sino 90deg of 1deg step')
+plt.imshow(sino_360_5.T, cmap='gray', aspect='auto', origin = 'lower')
+plt.title('sino 3600deg of 5deg step')
 plt.xlabel('Number of Projections')
-plt.ylabel('Angle of Rotation')
+plt.ylabel('Rotation Step of 5deg step size')
 plt.show()
-'''
+
 
 #back_proj(sino_360_5, 72, 1)
 #back_proj(sino_90_1, 15, 1)
 #back_proj(sino_180_5, 18, 1)
 #back_proj(sino_360_1, 57, 1)
 #recon_back_proj(sino_360_1, 360)
-'''
-filt_sino_1 = filtered_sino(sino_360_1, 0.00000001, True )
-filt_sino_2 = filtered_sino(sino_360_1, 0.1, True )
-filt_sino_3 = filtered_sino(sino_360_1, 100.0, True )
+
+filt_sino_1 = filtered_sino(sino_360_1, 0.00000001 )
+filt_sino_2 = filtered_sino(sino_360_1, 0.1)
+filt_sino_3 = filtered_sino(sino_360_1, 100.0 )
 recon_back_proj(filt_sino_1, 360)
 recon_back_proj(filt_sino_2, 360)
 recon_back_proj(filt_sino_3, 360)
-'''
+
 
 	
