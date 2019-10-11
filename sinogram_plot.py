@@ -20,14 +20,18 @@ def filtered_sino(sinogram, param_a):
 	# a - parameter that modulates roll off at high frequencies
 	a = param_a
 	filt_sino = np.zeros((sinogram.shape[0], sinogram.shape[1]))
-	# ramp filter
+
+	# Filter in time domain for windowed ramp filter in fourier doman
+	# as refered to Waqas Akram
+	# sin filter
 	step_size = 2*np.pi/sinogram.shape[0]
 	w = np.arange(-np.pi, np.pi, step_size)
-	#ramp_filter = abs(2/a*np.sin(a*w/2))
+	ramp_filter = abs(2/a*np.sin(a*w/2))
 	# sinc filter
 	sinc_filter = np.sin(a*w/2)/(a*w/2) 
-	filter_proj = 2*sinc_filter - sinc_filter**2
+	filter_proj = ramp_filter*sinc_filter**2
 
+	# windowed ramp filter in fourier domain
 	fourier_filt = fftshift(filter_proj)
 	for i in range(sinogram.shape[1]):
 		fourier_sino = fft(sinogram[:,i])
@@ -77,7 +81,7 @@ def recon_back_proj(sinogram, num_rotations):
 		num_angles = num_rotations
 
 	for theta in range(num_angles):
-		proj_image = back_proj(sinogram, theta, 0)
+		proj_image = back_proj(sinogram, theta)
 		recon_matrix += proj_image
 
 	print(recon_matrix)
@@ -95,21 +99,15 @@ sino_180_5 = np.loadtxt("180_5.txt", dtype='f', delimiter = '\t')
 sino_360_1 = np.loadtxt("360_1.txt", dtype='f', delimiter = '\t')
 sino_360_5 = np.loadtxt("360_5.txt", dtype='f', delimiter = '\t')
 
+recon_back_proj(sino_360_1, 180)
+
 sino_1 = plt.imread("sino1.bmp")
 
 '''
-recon_back_proj(sino_1, 180)
 
 sino_1_noise1 = add_noise(sino_1, 0, 1, 1)
 plt.imshow(sino_1_noise1, cmap='gray', origin = 'lower')
 plt.title('sino1 with added noise')
-plt.xlabel('Number of Projections')
-plt.ylabel('Angle of Rotation')
-plt.show()
-
-sino_1_noise2 = add_noise(sino_1, 0, 2, 1)
-plt.imshow(sino_1_noise2, cmap='gray', origin = 'lower')
-plt.title('sino1 with added noise ')
 plt.xlabel('Number of Projections')
 plt.ylabel('Angle of Rotation')
 plt.show()
@@ -123,13 +121,6 @@ plt.show()
 
 sino_1_noise4 = add_noise(sino_1, 0, 7, 1)
 plt.imshow(sino_1_noise4, cmap='gray', origin = 'lower')
-plt.title('sino1 with added noise')
-plt.xlabel('Number of Projections')
-plt.ylabel('Angle of Rotation')
-plt.show()
-
-sino_1_noise5 = add_noise(sino_1, 0, 12, 1)
-plt.imshow(sino_1_noise5, cmap='gray', origin = 'lower')
 plt.title('sino1 with added noise')
 plt.xlabel('Number of Projections')
 plt.ylabel('Angle of Rotation')
@@ -157,12 +148,20 @@ plt.show()
 #back_proj(sino_360_1, 57, 1)
 #recon_back_proj(sino_360_1, 360)
 
-filt_sino_1 = filtered_sino(sino_360_1, 0.00000001 )
-filt_sino_2 = filtered_sino(sino_360_1, 0.1)
-filt_sino_3 = filtered_sino(sino_360_1, 100.0 )
+'''
+filt_sino_1 = filtered_sino(sino_360_1, 0.1)
+filt_sino_2 = filtered_sino(sino_360_1, 1.0)
+filt_sino_3 = filtered_sino(sino_360_1, 10.0)
+
+plt.imshow(filt_sino_1.T, cmap='gray', aspect='auto', origin = 'lower')
+plt.show()
+plt.imshow(filt_sino_2.T, cmap='gray', aspect='auto', origin = 'lower')
+plt.show()
+plt.imshow(filt_sino_3.T, cmap='gray', aspect='auto', origin = 'lower')
+plt.show()
 recon_back_proj(filt_sino_1, 360)
 recon_back_proj(filt_sino_2, 360)
 recon_back_proj(filt_sino_3, 360)
-
+'''
 
 	
